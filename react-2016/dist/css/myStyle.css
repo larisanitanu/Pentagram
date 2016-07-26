@@ -1,0 +1,16 @@
+body {
+    background: url('/image/selfie.jpg');
+}
+
+.container-fluid-center{
+    width: 400px;
+}
+
+.jumbotron{
+    background: rgba(128, 255, 255, 0.2);
+}
+
+.navbar{
+    background: rgba(128, 255, 255, 0.3);
+    border:none;
+}
