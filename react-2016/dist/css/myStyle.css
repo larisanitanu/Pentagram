@@ -2,15 +2,83 @@ body {
     background: url('/image/selfie.jpg');
 }
 
-.container-fluid-center{
+.container-fluid-center {
     width: 400px;
 }
 
-.jumbotron{
+.jumbotron {
     background: rgba(128, 255, 255, 0.2);
 }
 
-.navbar{
+.navbar {
     background: rgba(128, 255, 255, 0.3);
-    border:none;
+    border: none;
+}
+
+.button {
+    display: inline-block;
+    padding: 0px 50px;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #1ad1ff;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px #666;
+}
+
+.button:hover {
+    background-color: #33adff
+}
+
+.button:active {
+    background-color: #006680;
+    box-shadow: 0 2px #666;
+    transform: translateY(4px);
+}
+
+input[type=text] {
+    background-color: rgba(128, 255, 255, 0.8);
+    color: #006680;
+    width: 100%;
+    padding: 2px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px #1ad1ff;
+    transition: 0s;
+    outline: none;
+}
+
+input[type=text]:focus {
+    border: 2px solid #33adff;
+    background-color: rgba(128, 255, 255, 0.8);
+}
+
+
+
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+    background-color: rgba(128, 255, 255, 0.8);
+    -webkit-box-shadow: 0 0 0px 1000px rgba(128, 255, 255, 0.8) inset;
+    color: #006680;
+}
+
+input[type=password] {
+    background-color: rgba(128, 255, 255, 0.8);
+    color: #006680;
+    width: 100%;
+    padding: 2px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px #1ad1ff;
+    transition: 0s;
+    outline: none;
+}
+
+input[type=password]:focus {
+    border: 2px solid #33adff;
 }
