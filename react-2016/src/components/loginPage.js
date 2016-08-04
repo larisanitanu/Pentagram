@@ -1,7 +1,6 @@
 "use strict";
 
 var React = require('react');
-var Input = require('./common/textInput');
 var Router = require('react-router');
 var Link = Router.Link;
 
@@ -28,13 +27,14 @@ var Login = React.createClass({
             , type: 'POST'
             , data: this.state
             , error: function (response) {
-                    console.log(response.responseJSON.non_field_errors[0]);
+                console.log(response.responseJSON.non_field_errors[0]);
             }
-            ,success: function() {
+            , success: function () {
                 console.log("User logged in successfully completed!");
             }
         }).then(function (data) {
             sessionStorage.setItem('authToken', data.token);
+            Router.HashLocation.push("photos");
             //redir homepage
         });
 
@@ -42,6 +42,7 @@ var Login = React.createClass({
     render: function () {
 
         return (
+
             <div>
                 <div className="text-center jumbotron">
                     <image src="image/logo.png" width="200px"/>
@@ -53,6 +54,7 @@ var Login = React.createClass({
                                   placeholder="Password"/></p>
                         <br />
                         <button className="button" type="submit" onClick={this.formSubmitHandler}>Login</button>
+                        
                     </form>
                 </div>
                 <div className="text-center jumbotron">

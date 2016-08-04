@@ -1,5 +1,6 @@
 body {
-    background: url('/image/selfie.jpg');
+    background: url('/image/pyyy.jpg');
+    background-paggind: 100px;
 }
 
 .container-fluid-center {
@@ -7,12 +8,13 @@ body {
 }
 
 .jumbotron {
-    background: rgba(128, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .navbar {
-    background: rgba(128, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
     border: none;
+    color: #2e2e2e;
 }
 
 .button {
@@ -41,7 +43,7 @@ body {
 }
 
 input[type=text] {
-    background-color: rgba(128, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.5);
     color: #006680;
     width: 100%;
     padding: 2px 20px;
@@ -53,32 +55,77 @@ input[type=text] {
     outline: none;
 }
 
-input[type=text]:focus {
-    border: 2px solid #33adff;
-    background-color: rgba(128, 255, 255, 0.8);
-}
-
-
-
-input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
-    background-color: rgba(128, 255, 255, 0.8);
-    -webkit-box-shadow: 0 0 0px 1000px rgba(128, 255, 255, 0.8) inset;
-    color: #006680;
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.5) inset !important;
 }
 
 input[type=password] {
-    background-color: rgba(128, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.5);
     color: #006680;
     width: 100%;
     padding: 2px 20px;
     margin: 8px 0;
-    box-sizing: border-box;
     border: none;
-    border-bottom: 2px #1ad1ff;
-    transition: 0s;
     outline: none;
 }
 
-input[type=password]:focus {
-    border: 2px solid #33adff;
+.image-block {
+    float: left;
+    overflow: hidden;
+    margin-top: 40px;
+    position: relative;
+    width: 395px;
+    height: 210px;
+    margin-left: 50px;
 }
+
+.image-block > img {
+    /*height: 350px;*/
+    vertical-align: middle;
+/*    border-radius: 5px;*/
+    background-color: #000;
+}
+
+
+.image-block > div.img-caption {
+    position: absolute;
+    bottom: 0px;
+    background: rgba(0,0,0,0.5);
+    color: #FFF;
+    width: 100%;
+}
+
+i.my-img-comment-icon {
+    font-size: 25px;
+    vertical-align: middle;
+    overflow: hidden;
+    padding: 8px;
+}
+
+i.my-img-like-icon {
+    font-size: 25px;
+    vertical-align: middle;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.image-block > div.img-caption > div.img-caption-divs > a {
+    font-size: 20px;
+    color: #EEEEEE;
+    text-decoration: none;
+}
+
+
+.image-block > div.img-caption > div.img-caption-divs > a:hover {
+    color: #2D867B;
+    cursor: pointer;
+}
+
+
+.image-block > div.img-caption > div.img-caption-divs {
+    float: left;
+    display: inline-block;
+    width: 50%;
+}
+
+

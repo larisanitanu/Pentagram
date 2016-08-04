@@ -1,6 +1,7 @@
 "use strict";
 
 var React = require('react');
+var Router = require('react-router');
 var Input = require('./common/textInput');
 
 var Register = React.createClass({
@@ -40,11 +41,13 @@ var Register = React.createClass({
                     console.log("User registration successfully completed!");
                 }
                 , error: function (response) {
-                    console.log(response.responseJSON);
+                    console.log(response.responseJSON.non_field_errors[0]);
                 }
             }).then(function (data) {
                 //sessionStorage.setItem('authToken', data.token);
                 //redir homepage
+                sessionStorage.setItem('authToken', data.token);
+                Router.HashLocation.push("photos");
             });
         }
         else {

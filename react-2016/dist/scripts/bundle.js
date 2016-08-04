@@ -32007,19 +32007,19 @@ var Router = require('react-router');
 var Link = Router.Link;
 
 var Header = React.createClass({displayName: "Header",
-	render: function() {
-		return (
-        React.createElement("nav", {className: "navbar navbar-default"}, 
-          React.createElement("div", {className: "container-fluid"}, 
-              React.createElement("ul", {className: "nav navbar-nav"}, 
-                React.createElement("li", null, React.createElement(Link, {to: "app"}, "Home")), 
-                React.createElement("li", null, React.createElement(Link, {to: "loginPage"}, "Login")), 
-                React.createElement("li", null, React.createElement(Link, {to: "registerPage"}, "Register"))
-              )
-          )
-        )
-		);
-	}
+    render: function () {
+        return (
+            React.createElement("nav", {className: "navbar navbar-default"}, 
+                React.createElement("div", {className: "container-fluid"}, 
+                    React.createElement("ul", {className: "nav navbar-nav"}, 
+                        React.createElement("li", null, React.createElement(Link, {to: "home"}, "Home")), 
+                        React.createElement("li", null, React.createElement(Link, {to: "loginPage"}, "Login")), 
+                        React.createElement("li", null, React.createElement(Link, {to: "registerPage"}, "Register"))
+                    )
+                )
+            )
+        );
+    }
 });
 
 module.exports = Header;
@@ -32067,31 +32067,89 @@ module.exports = Input;
 },{"react":196}],200:[function(require,module,exports){
 "use strict";
 
+var Router = require('react-router');
 var React = require('react');
-var Input = require('./common/textInput');
+var Link = Router.Link;
+var username = sessionStorage.getItem("username");
+
+if (!username) {
+	username = "Guest";
+}
+var Home = React.createClass({displayName: "Home",
+	render: function() {
+		var token = sessionStorage.getItem("authToken");
+		return (
+				React.createElement("div", {className: "jumbotron"}, 
+
+					React.createElement("h4", null, "Welcome ", username), 
+					React.createElement("br", null), 
+					React.createElement("h5", null, " Your token is ", token, " ")
+
+				)
+		);
+	}
+});
+
+module.exports = Home;
+
+},{"react":196,"react-router":27}],201:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
 
 var Login = React.createClass({displayName: "Login",
-    getInitialState: function() {
-    return {value: 'Username'};
+    getInitialState: function () {
+        return {
+            username: null
+            , password: null
+        };
     },
-    handleChange: function (e) {
-        this.setState({value: e.target.value});
+    userChangeHandler: function (e) {
+        this.setState({username: e.target.value});
 
     },
-    render: function(){
-        
+    PasswordChangeHandler: function (e) {
+        this.setState({password: e.target.value});
+
+    },
+    formSubmitHandler: function (e) {
+        e.preventDefault();
+        console.log(this.state);
+        $.ajax({
+            url: 'http://127.0.0.1:8000/api/v1/login/'
+            , type: 'POST'
+            , data: this.state
+            , error: function (response) {
+                console.log(response.responseJSON.non_field_errors[0]);
+            }
+            , success: function () {
+                console.log("User logged in successfully completed!");
+            }
+        }).then(function (data) {
+            sessionStorage.setItem('authToken', data.token);
+            Router.HashLocation.push("photos");
+            //redir homepage
+        });
+
+    },
+    render: function () {
+
         return (
+
             React.createElement("div", null, 
                 React.createElement("div", {className: "text-center jumbotron"}, 
                     React.createElement("image", {src: "image/logo.png", width: "200px"}), 
                     React.createElement("form", null, 
                         React.createElement("br", null), 
-                        React.createElement("p", null, React.createElement("input", {type: "text", name: "username", label: "", onChange: this.props.onChange, placeholder: "Username"})), 
-                        React.createElement("p", null, React.createElement("input", {type: "password", name: "password", label: "", onCange: this.props.onChange, placeholder: "Password"}), " "), 
+                        React.createElement("p", null, React.createElement("input", {type: "text", name: "username", label: "", onChange: this.userChangeHandler, 
+                                  placeholder: "Username"})), 
+                        React.createElement("p", null, React.createElement("input", {type: "password", name: "password", label: "", onChange: this.PasswordChangeHandler, 
+                                  placeholder: "Password"})), 
                         React.createElement("br", null), 
-                        React.createElement("button", {type: "submit"}, "Login")
+                        React.createElement("button", {className: "button", type: "submit", onClick: this.formSubmitHandler}, "Login")
+                        
                     )
                 ), 
                 React.createElement("div", {className: "text-center jumbotron"}, 
@@ -32105,7 +32163,7 @@ var Login = React.createClass({displayName: "Login",
 
 module.exports = Login;
 
-},{"./common/textInput":199,"react":196,"react-router":27}],201:[function(require,module,exports){
+},{"react":196,"react-router":27}],202:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -32125,32 +32183,161 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage;
 
-},{"react":196,"react-router":27}],202:[function(require,module,exports){
+},{"react":196,"react-router":27}],203:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
+var Router = require('react-router');
+var Link = Router.Link;
+
+var Photo = React.createClass({displayName: "Photo",
+    getInitialState: function () {
+        return {
+            images: [{
+                "id": 1,
+                "user": 2,
+                "photo": "photo/user_larissa/37894846-4ab1-11e6-83ea-ca64b86f7846_Jellyfish.jpg"
+
+            }]
+        };
+
+    }
+    , componentWillMount: function () {
+        var self = this;
+        $.ajax({
+            url: 'http://127.0.0.1:8000/api/v1/photos/'
+            , type: 'GET'
+            , error: function (xhr, textStatus, errorThrown) {
+
+            }
+        }).then(function (data) {
+            self.setState({images: data});
+        });
+    }
+    , onCommentHandler: function (event) {
+        var photoId = event.target.dataset.id;
+        Router.HashLocation.push('photo/' + photoId);
+    }
+    , render: function () {
+        var self = this;
+
+        var tokenNumber = sessionStorage.getItem("authToken");
+        if (!tokenNumber) {
+            Router.HashLocation.push("login");
+        }
+        return (
+            React.createElement("div", {className: "row image-gallery-bg"}, 
+                React.createElement("div", {className: "col-md-12"}, 
+
+                    self.state.images.map(function (item) {
+                        return React.createElement("div", {className: "row image-gallery-view"}, 
+                            React.createElement("div", {className: "image-block", key: item.id}, 
+                                React.createElement("a", {href: '#/photo/' + item.id}, 
+                                    React.createElement("img", {src: 'http://127.0.0.1:8000' + item.photo, id: 'image-' + item.id, 
+                                         "data-id": item.id, width: "100%", height: "100%"})
+                                ), 
+                                React.createElement("div", {className: "img-caption"}, 
+                                    React.createElement("div", {className: "img-caption-divs"}, 
+                                        React.createElement("a", {href: '#/photo/' + item.id}, 
+                                            React.createElement("i", {className: "material-icons my-img-comment-icon left"}, "comment"), 
+                                            " "
+                                        )
+                                    ), 
+                                    React.createElement("div", {className: "img-caption-divs"}, 
+                                        React.createElement("a", {href: ""}, 
+                                            React.createElement("i", {className: "material-icons my-img-like-icon right"}, "thumb_up"), 
+                                            " "
+                                        )
+                                    )
+                                )
+                            )
+                        );
+                    })
+
+                )
+            )
+        );
+    }
+});
+
+module.exports = Photo;
+
+},{"react":196,"react-router":27}],204:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var Router = require('react-router');
 var Input = require('./common/textInput');
 
 var Register = React.createClass({displayName: "Register",
-    getInitialState: function() {
-    return {value: 'Username'};
+    getInitialState: function () {
+        return {
+            username: null
+            , password: null
+            , passwordRepeat: null
+            , email: null
+        };
     },
-    handleChange: function (e) {
-        this.setState({value: e.target.value});
+    userChangeHandler: function (e) {
+        this.setState({username: e.target.value});
 
     },
-    render: function(){
+    passwordChangeHandler: function (e) {
+        this.setState({password: e.target.value});
+
+    },
+    passwordRepeatChangeHandler: function (e) {
+        this.setState({passwordRepeat: e.target.value});
+
+    },
+    emailChangeHandler: function (e) {
+        this.setState({email: e.target.value});
+
+    },
+    formSubmitHandler: function (e) {
+        e.preventDefault();
+        console.log(this.state);
+        if (this.state.password === this.state.passwordRepeat) {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/api/v1/users/'
+                , type: 'POST'
+                , data: this.state
+                , success: function () {
+                    console.log("User registration successfully completed!");
+                }
+                , error: function (response) {
+                    console.log(response.responseJSON.non_field_errors[0]);
+                }
+            }).then(function (data) {
+                //sessionStorage.setItem('authToken', data.token);
+                //redir homepage
+                sessionStorage.setItem('authToken', data.token);
+                Router.HashLocation.push("photos");
+            });
+        }
+        else {
+            console.log("Password doesn't match!");
+        }
+
+    },
+
+    render: function () {
         return (
             React.createElement("div", {className: "text-center jumbotron"}, 
                 React.createElement("image", {src: "image/logo.png", width: "200px"}), 
                 React.createElement("form", null, 
                     React.createElement("br", null), 
-                    React.createElement("p", null, React.createElement("input", {type: "text", name: "username", label: "", onChange: this.props.onChange, placeholder: "Username"})), 
-                    React.createElement("p", null, React.createElement("input", {type: "text", name: "username", label: "", onChange: this.props.onChange, placeholder: "Email"})), 
-                    React.createElement("p", null, React.createElement("input", {type: "password", name: "password", label: "", onCange: this.props.onChange, placeholder: "Password"}), " "), 
-                    React.createElement("p", null, React.createElement("input", {type: "password", name: "password", label: "", onCange: this.props.onChange, placeholder: "Retype password"}), " "), 
+                    React.createElement("p", null, React.createElement("input", {type: "text", name: "username", label: "", onChange: this.userChangeHandler, 
+                              placeholder: "Username"})), 
+                    React.createElement("p", null, React.createElement("input", {type: "text", name: "email", label: "", onChange: this.emailChangeHandler, placeholder: "Email"})
+                    ), 
+                    React.createElement("p", null, React.createElement("input", {type: "password", name: "password", label: "", onChange: this.passwordChangeHandler, 
+                              placeholder: "Password", required: true})), 
+                    React.createElement("p", null, React.createElement("input", {type: "password", name: "passwordRepeat", label: "", 
+                              onChange: this.passwordRepeatChangeHandler, 
+                              placeholder: "Confirm password", required: true})), 
                     React.createElement("br", null), 
-                    React.createElement("button", {type: "submit"}, "Sign up")
+                    React.createElement("button", {type: "submit", className: "button", onClick: this.formSubmitHandler}, "Sign up")
                 )
             )
         );
@@ -32158,7 +32345,7 @@ var Register = React.createClass({displayName: "Register",
 });
 
 module.exports = Register;
-},{"./common/textInput":199,"react":196}],203:[function(require,module,exports){
+},{"./common/textInput":199,"react":196,"react-router":27}],205:[function(require,module,exports){
 "use strict";
 
 
@@ -32169,7 +32356,7 @@ var routes = require('./routes');
 Router.run(routes, function(Handler){
    React.render(React.createElement(Handler, null), document.getElementById('app'));
 });
-},{"./routes":204,"react":196,"react-router":27}],204:[function(require,module,exports){
+},{"./routes":206,"react":196,"react-router":27}],206:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -32181,17 +32368,20 @@ var NotFoundRoute = Router.NotFoundRoute;
 var Redirect = Router.Redirect;
 
 var routes = (
-  React.createElement(Route, {name: "app", path: "/", handler: require('./components/app')}, 
-    React.createElement(DefaultRoute, {handler: require('./components/loginPage')}), 
-    React.createElement(Route, {name: "loginPage", handler: require('./components/loginPage')}), 
-    React.createElement(Route, {name: "registerPage", handler: require('./components/registerPage')}), 
-    React.createElement(NotFoundRoute, {handler: require('./components/notFoundPage')}), 
-    "// do the redirect if route fails", 
-    React.createElement(Redirect, {from: "about-us", to: "about"}), 
-    React.createElement(Redirect, {from: "about/*", to: "about"})
-  )
+    React.createElement(Route, {name: "app", path: "/", handler: require('./components/app')}, 
+        React.createElement(DefaultRoute, {handler: require('./components/photosPage')}), 
+        React.createElement(Route, {name: "home", handler: require('./components/homePage')}), 
+        React.createElement(Route, {name: "photos", handler: require('./components/photosPage')}), 
+        React.createElement(Route, {name: "photos/:id", handler: require('./components/photosPage')}), 
+        React.createElement(Route, {name: "loginPage", handler: require('./components/loginPage')}), 
+        React.createElement(Route, {name: "registerPage", handler: require('./components/registerPage')}), 
+        React.createElement(NotFoundRoute, {handler: require('./components/notFoundPage')}), 
+        "// do the redirect if route fails", 
+        React.createElement(Redirect, {from: "about-us", to: "about"}), 
+        React.createElement(Redirect, {from: "about/*", to: "about"})
+    )
 );
 
 module.exports = routes;
 
-},{"./components/app":197,"./components/loginPage":200,"./components/notFoundPage":201,"./components/registerPage":202,"react":196,"react-router":27}]},{},[203]);
+},{"./components/app":197,"./components/homePage":200,"./components/loginPage":201,"./components/notFoundPage":202,"./components/photosPage":203,"./components/registerPage":204,"react":196,"react-router":27}]},{},[205]);

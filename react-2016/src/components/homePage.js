@@ -1,16 +1,24 @@
 "use strict";
 
-var React = require('react');
 var Router = require('react-router');
+var React = require('react');
 var Link = Router.Link;
+var username = sessionStorage.getItem("username");
 
+if (!username) {
+	username = "Guest";
+}
 var Home = React.createClass({
 	render: function() {
+		var token = sessionStorage.getItem("authToken");
 		return (
-			<div className="jumbotron">
-				<h1> Pentagram</h1>
-				<Link to="about" className="btn btn-primary btn-lg">Learn more</Link>
-			</div>
+				<div className="jumbotron">
+
+					<h4>Welcome {username}</h4>
+					<br />
+					<h5> Your token is {token} </h5>
+
+				</div>
 		);
 	}
 });
